@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "GKxP9uXz/qQ=",
+  "success": true,
+  "projectFilePath": "/home/ZBager/RiderProjects/12-Bit-Compiler/Compiler-12-Bit/Compiler-12-Bit.csproj",
+  "expectedPackageFiles": [
+    "/home/ZBager/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.4/microsoft.aspnetcore.app.ref.10.0.4.nupkg.sha512"
+  ],
+  "logs": []
+}
