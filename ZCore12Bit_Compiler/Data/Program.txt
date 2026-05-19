@@ -1,0 +1,22 @@
+    MOVE 0, REG[1]
+    MOVE 15, REG[7]
+    MOVE 14, REG[6]
+OUTER:
+    MOVE 0, REG[2]
+    MOVE REG[1], REG[5]
+    SUB REG[7], REG[5]
+    DEC REG[5]
+INNER:
+    MOVE RAM[REG[1]], REG[3]
+    INC REG[1]
+    MOVE RAM[REG[1]], REG[4]
+    JLE REG[3], REG[4], SKIP_SWAP
+    MOVE REG[3], RAM[REG[2]]
+    DEC REG[2]
+    MOVE REG[4], RAM[REG[2]]
+    INC REG[1], REG[1]
+SKIP_SWAP:
+    JLE REG[2], REG[5], INNER
+    INC REG[1]
+    JLE REG[1], REG[6], OUTER
+    STOP

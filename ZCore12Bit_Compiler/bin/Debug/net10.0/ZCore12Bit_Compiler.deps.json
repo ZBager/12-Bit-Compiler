@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "ZCore12Bit_Compiler/1.0.0": {
+        "runtime": {
+          "ZCore12Bit_Compiler.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ZCore12Bit_Compiler/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

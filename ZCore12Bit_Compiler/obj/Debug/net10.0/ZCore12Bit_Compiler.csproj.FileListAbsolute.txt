@@ -1,0 +1,14 @@
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.GeneratedMSBuildEditorConfig.editorconfig
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.AssemblyInfoInputs.cache
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.AssemblyInfo.cs
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.csproj.CoreCompileInputs.cache
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/bin/Debug/net10.0/ZCore12Bit_Compiler
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/bin/Debug/net10.0/ZCore12Bit_Compiler.deps.json
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/bin/Debug/net10.0/ZCore12Bit_Compiler.runtimeconfig.json
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/bin/Debug/net10.0/ZCore12Bit_Compiler.dll
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/bin/Debug/net10.0/ZCore12Bit_Compiler.pdb
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.dll
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/refint/ZCore12Bit_Compiler.dll
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.pdb
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ZCore12Bit_Compiler.genruntimeconfig.cache
+/home/ZBager/RiderProjects/ZCore12Bit_Compiler/ZCore12Bit_Compiler/obj/Debug/net10.0/ref/ZCore12Bit_Compiler.dll
