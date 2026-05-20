@@ -7,4 +7,13 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Content Include="obj\ZCore12Bit_Compiler.csproj.nuget.g.props" />
+      <Content Include="obj\ZCore12Bit_Compiler.csproj.nuget.g.targets" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Include="obj\Debug\net10.0\ZCore12Bit_Compiler.GlobalUsings.g.cs" />
+    </ItemGroup>
+
 </Project>

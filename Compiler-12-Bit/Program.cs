@@ -5,8 +5,12 @@ namespace Compiler;
 
 public class CpuCompiler
 {
+    // Lists, Pointers and Dictionaries
     private static int _pcLine;
     private static Dictionary<string, int> _labelPointers = new Dictionary<string, int>();
+    private static Dictionary<string, int[]> _labelUsages = new Dictionary<string, int[]>();
+    private static string[] _program = {"START"};
+    // Loading Program
     private static string[] LoadProgram(string path)
     {
         string programPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), path);
@@ -16,16 +20,19 @@ public class CpuCompiler
         Environment.Exit(10);
         return null;
     }
-    private static void CheckFlagStatus()
-    { 
-        Console.WriteLine("E10");
-        Console.WriteLine("000");
+    private static void ClearFlags()
+    {
+        _program = _program.Append("E10").ToArray();
+        _program = _program.Append("000").ToArray();
         _pcLine += 2;
     } 
     static int Main()
     {
         foreach (string line in LoadProgram(@"../../../Data/Program.txt"))
+        {
             Parser(line);
+        }
+
         return 0;
     }
 
@@ -62,7 +69,6 @@ public class CpuCompiler
         }
         Labeler(line, _pcLine);
     }
-
     private static void Labeler (string label, int line)
     {
         label = label.TrimEnd(':');
@@ -76,40 +82,48 @@ public class CpuCompiler
             Environment.Exit(10);
         }
     }
-
     private static void dec_command_4A(string command, string argA, string argB, string label)
     { 
         switch (command)
         {
             case "JE":
-                CheckFlagStatus();
+                ClearFlags();
                 Parser(" MOVE 4, REG[13]"); 
                 Parser(" CMP " + argA + ", " + argB);
-                Parser(" CMOVE " + _labelPointers[label] + ", REG[15]");
+                jump_helper(label);
                 break;
             case "JLE" or "JEL":
-                CheckFlagStatus();
+                ClearFlags();
                 Parser(" MOVE 5, REG[13]");
                 Parser(" CMP " + argA + ", " + argB);
-                Parser(" CMOVE " + _labelPointers[label] + ", REG[15]");
+                jump_helper(label);
                 break;
             case "JG":
-                CheckFlagStatus();
+                ClearFlags();
                 Parser(" MOVE 2, REG[13]");
                 Parser(" CMP " + argA + ", " + argB);
-                Parser(" CMOVE " + _labelPointers[label] + ", REG[15]");
+                jump_helper(label);
                 break;
             case "JL":
-                CheckFlagStatus();
+                ClearFlags();
                 Parser(" MOVE 1, REG[13]");
                 Parser(" CMP " + argA + ", " + argB);
-                Parser(" CMOVE " + _labelPointers[label] + ", REG[15]");
+                jump_helper(label);
                 break;
             case "JO":
                 Parser(" MOVE 8, REG[13]");
-                Parser(" CMOVE " + _labelPointers[label] + ", REG[15]");
+                jump_helper(label);
                 break;
         }
+    }
+
+    private static void jump_helper(string label)
+    {
+        _program = _program.Append("F20").ToArray();
+        _pcLine += 1;
+        _program = _program.Append(label).ToArray();
+        // _labelUsages.Add(label, _labelUsages[label].Append(_pcLine));
+        _pcLine += 1;
     }
     private static void dec_command_3A (string command, string argA, string argB)
     {
@@ -148,31 +162,29 @@ public class CpuCompiler
                 break;
         }
     }
-
     private static void dec_helper_3A(string argA, string argB, string opcR, string opcI)
     {
         if (isREG(argA))
         {
-            Console.WriteLine(getREGHEX(getREG(argB)) + getREGHEX(getREG(argA)) + opcR);
+            _program = _program.Append(getREGHEX(getREG(argB)) + getREGHEX(getREG(argA)) + opcR).ToArray();
             _pcLine += 1;
         } else if (isVAL(argA))
         {
-            Console.WriteLine(getREGHEX(getREG(argB)) + opcI);
-            Console.WriteLine(getVALHEX(GetVal_HexToInt(argA)));
+            _program = _program.Append(getREGHEX(getREG(argB)) + opcI).ToArray();
+            _program = _program.Append(getVALHEX(GetVal_HexToInt(argA))).ToArray();
             _pcLine += 2;
         }
     }
-        
     private static void dec_command_2A (string command, string argB)
     {
         switch (command)
         {
             case "INC":
-                Console.WriteLine(getREGHEX(getREG(argB)) + "30");
+                _program = _program.Append(getREGHEX(getREG(argB)) + "30").ToArray();
                 _pcLine += 1;
                 break;
             case "DEC":
-                Console.WriteLine(getREGHEX(getREG(argB)) + "40");
+                _program = _program.Append(getREGHEX(getREG(argB)) + "40").ToArray();
                 _pcLine += 1;
                 break;
         }
@@ -182,16 +194,15 @@ public class CpuCompiler
         switch (command)
         {
             case "STOP":
-                Console.WriteLine("000");
+                _program = _program.Append("000").ToArray();
                 _pcLine += 1;
                 break;
             case "CSTOP":
-                Console.WriteLine("001");
+                _program = _program.Append("001").ToArray();
                 _pcLine += 1;
                 break;
         }
     }
-
     private static int GetVal_HexToInt(string arg)
     {
         return Int32.Parse(arg, NumberStyles.Integer);
