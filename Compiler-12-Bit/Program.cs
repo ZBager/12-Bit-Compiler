@@ -263,13 +263,10 @@ public class CpuCompiler
         {
             case 1:
                 return Int32.Parse(arg.Substring(4, arg.Length - 5), NumberStyles.Integer);
-                break;
             case 2:
                 return Int32.Parse(arg, NumberStyles.Integer);
-                break;
             case 3:
                 return Int32.Parse(arg.Substring(8, arg.Length - 10), NumberStyles.Integer);
-                break;
         }
         Console.WriteLine(arg);
         Environment.Exit(20);
