@@ -10,9 +10,6 @@
     <ItemGroup>
       <Content Include="obj\Compiler-12-Bit.csproj.nuget.g.props" />
       <Content Include="obj\Compiler-12-Bit.csproj.nuget.g.targets" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Compile Include="obj\Debug\net10.0\Compiler-12-Bit.GlobalUsings.g.cs" />
     </ItemGroup>
 
