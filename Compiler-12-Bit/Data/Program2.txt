@@ -1,10 +1,12 @@
-    MOVE 48, REG[1]
-    MOVE 63, REG[7]
-OUTER:
-    MOVE REG[1], REG[5]
-    SUB REG[7], REG[5]
-    DEC REG[5]
-INNER:
+    MOVE 48, REG[1]     2
+    MOVE 63, REG[7]     2
+    MOVE 62, REG[6]     2
+OUTER:                  LABEL
+    MOVE 0, REG[2]      2
+    MOVE REG[1], REG[5] 1
+    SUB REG[7], REG[5]  1
+    DEC REG[5]          1
+INNER:                  LABEL
     MOVE RAM[REG[1]], REG[3]
     INC REG[1]
     MOVE RAM[REG[1]], REG[4]

@@ -1,15 +1,16 @@
 ﻿using System.Reflection;
 using System.Globalization;
+using System.Net.Http.Headers;
 
 namespace Compiler;
 
 public class CpuCompiler
 {
     // Lists, Pointers and Dictionaries
-    private static int _pcLine;
+    private static int _pcLine = 0;
     private static Dictionary<string, int> _labelPointers = new Dictionary<string, int>();
-    private static Dictionary<string, int[]> _labelUsages = new Dictionary<string, int[]>();
-    private static string[] _program = {"START"};
+    private static Dictionary<string, List<int>> _labelUsages = new Dictionary<string, List<int>>();
+    private static List<string> _program = new List<string>();
     // Loading Program
     private static string[] LoadProgram(string path)
     {
@@ -22,17 +23,42 @@ public class CpuCompiler
     }
     private static void ClearFlags()
     {
-        _program = _program.Append("E10").ToArray();
-        _program = _program.Append("000").ToArray();
+        _program.Add("E10");
+        _program.Add("000");
         _pcLine += 2;
     } 
     static int Main()
     {
         foreach (string line in LoadProgram(@"../../../Data/Program.txt"))
-        {
             Parser(line);
+
+        foreach (var KEY in _labelUsages)
+            foreach (var LINE in KEY.Value)
+                _program[LINE] = getVALHEX(_labelPointers[KEY.Key]);
+
+        foreach (var LINE in _program)
+            Console.WriteLine(LINE);
+
+        foreach (var KEY in _labelPointers)
+        {
+            Console.WriteLine("Key: " + KEY.Key + " Value: " + KEY.Value);
+        }
+        
+        foreach (var KEY in _labelUsages)
+        {
+            Console.WriteLine("Key: " + KEY.Key);
+            Console.Write("Values: ");
+            foreach (var LINES in KEY.Value)
+            {
+                Console.Write(LINES + ", ");
+            }
+            Console.WriteLine();
         }
 
+        
+        Console.WriteLine("Written " + _pcLine + " lines");
+        Console.WriteLine("Should be " + _program.Count + " lines");
+        
         return 0;
     }
 
@@ -98,6 +124,12 @@ public class CpuCompiler
                 Parser(" CMP " + argA + ", " + argB);
                 jump_helper(label);
                 break;
+            case "JGE" or "JEG":
+                ClearFlags();
+                Parser(" MOVE 6, REG[13]");
+                Parser(" CMP " + argA + ", " + argB);
+                jump_helper(label);
+                break;
             case "JG":
                 ClearFlags();
                 Parser(" MOVE 2, REG[13]");
@@ -119,10 +151,12 @@ public class CpuCompiler
 
     private static void jump_helper(string label)
     {
-        _program = _program.Append("F20").ToArray();
+        _program.Add("F20");
         _pcLine += 1;
-        _program = _program.Append(label).ToArray();
-        // _labelUsages.Add(label, _labelUsages[label].Append(_pcLine));
+        _program.Add(label);
+        if (!_labelUsages.ContainsKey(label))
+            _labelUsages[label] = new List<int>();
+        _labelUsages[label].Add(_pcLine);
         _pcLine += 1;
     }
     private static void dec_command_3A (string command, string argA, string argB)
@@ -164,15 +198,28 @@ public class CpuCompiler
     }
     private static void dec_helper_3A(string argA, string argB, string opcR, string opcI)
     {
-        if (isREG(argA))
+        if (checkType(argB) == 3)
         {
-            _program = _program.Append(getREGHEX(getREG(argB)) + getREGHEX(getREG(argA)) + opcR).ToArray();
+            _program.Add(getREGHEX(getValue(argA)) + getREGHEX(getValue(argB)) + "E");
             _pcLine += 1;
-        } else if (isVAL(argA))
+            return;
+        }
+        switch (checkType(argA))
         {
-            _program = _program.Append(getREGHEX(getREG(argB)) + opcI).ToArray();
-            _program = _program.Append(getVALHEX(GetVal_HexToInt(argA))).ToArray();
-            _pcLine += 2;
+            case 1:
+                _program.Add(getREGHEX(getValue(argB)) + getREGHEX(getValue(argA)) + opcR);
+                _pcLine += 1;
+                break;
+            case 2:
+                _program.Add(getREGHEX(getValue(argB)) + opcI);
+                _program.Add(getVALHEX(getValue(argA)));
+                _pcLine += 2;
+                break;
+            case 3:
+                _program.Add(getREGHEX(getValue(argB)) + getREGHEX(getValue(argA)) + "F");
+                _pcLine += 1;
+                break;
+                
         }
     }
     private static void dec_command_2A (string command, string argB)
@@ -180,11 +227,11 @@ public class CpuCompiler
         switch (command)
         {
             case "INC":
-                _program = _program.Append(getREGHEX(getREG(argB)) + "30").ToArray();
+                _program.Add(getREGHEX(getValue(argB)) + "30");
                 _pcLine += 1;
                 break;
             case "DEC":
-                _program = _program.Append(getREGHEX(getREG(argB)) + "40").ToArray();
+                _program.Add(getREGHEX(getValue(argB)) + "40");
                 _pcLine += 1;
                 break;
         }
@@ -194,22 +241,14 @@ public class CpuCompiler
         switch (command)
         {
             case "STOP":
-                _program = _program.Append("000").ToArray();
+                _program.Add("000");
                 _pcLine += 1;
                 break;
             case "CSTOP":
-                _program = _program.Append("001").ToArray();
+                _program.Add("001");
                 _pcLine += 1;
                 break;
         }
-    }
-    private static int GetVal_HexToInt(string arg)
-    {
-        return Int32.Parse(arg, NumberStyles.Integer);
-    }
-    private static int getREG(string arg)
-    {
-        return Int32.Parse(arg.Substring(4, arg.Length - 5), NumberStyles.Integer);
     }
     private static string getREGHEX(int arg)
     {
@@ -219,32 +258,35 @@ public class CpuCompiler
     {
         return arg.ToString("X3");
     }
-    private static bool isVAL (string arg)
+    private static int getValue(string arg)
     {
-        try
+        switch (checkType(arg))
         {
-            if (UInt32.Parse(arg, NumberStyles.Integer) <= 4095)
-                return true;
-            return false;
+            case 1:
+                return Int32.Parse(arg.Substring(4, arg.Length - 5), NumberStyles.Integer);
+                break;
+            case 2:
+                return Int32.Parse(arg, NumberStyles.Integer);
+                break;
+            case 3:
+                return Int32.Parse(arg.Substring(8, arg.Length - 10), NumberStyles.Integer);
+                break;
         }
-        catch (Exception e)
-        {
-            return false;
-        }
+        Console.WriteLine(arg);
+        Environment.Exit(20);
+        return 0;
     }
-    private static bool isREG (string arg)
+    private static int checkType(string arg)
     {
-        try
-        {
-            if (String.Compare(arg.Substring(0, 4), "REG[") == 0 &&
-                UInt32.Parse(arg.Substring(4, arg.Length - 5), NumberStyles.Integer) <= 15 &&
-                String.Compare(arg.Substring(arg.Length-1, 1), "]") == 0)
-                return true;
-            return false;
-        }
-        catch (Exception e)
-        {
-            return false;
-        }
+        if (UInt32.TryParse(arg, NumberStyles.Integer, null, out uint value2) && value2 <= 4095)
+            return 2;
+        if (String.Compare(arg.Substring(0, 4), "REG[") == 0 && String.Compare(arg.Substring(arg.Length-1, 1), "]") == 0)
+            if (UInt32.TryParse(arg.Substring(4, arg.Length - 5), NumberStyles.Integer, null, out uint value) && value <= 15)
+                return 1;
+        if (String.Compare(arg.Substring(0, 8), "RAM[REG[") == 0 && String.Compare(arg.Substring(arg.Length-2, 2), "]]") == 0)
+            if (UInt32.TryParse(arg.Substring(8, arg.Length - 10), NumberStyles.Integer, null, out uint value) && value <= 15)
+                return 3;
+        Console.WriteLine("Type error arg: " + arg);
+        return 0;
     }
 }

@@ -21,6 +21,8 @@
 **/.idea/**/contentModel.xml
 **/.idea/**/modules.xml
 
+**/Compiler-12-Bit/bin
+
 *.suo
 *.user
 .vs/
