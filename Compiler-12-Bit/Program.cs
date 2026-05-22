@@ -38,25 +38,24 @@ public class CpuCompiler
         foreach (var LINE in _program)
             Console.WriteLine(LINE);
 
-        foreach (var KEY in _labelPointers)
-        {
-            Console.WriteLine("Key: " + KEY.Key + " Value: " + KEY.Value);
-        }
-        
-        foreach (var KEY in _labelUsages)
-        {
-            Console.WriteLine("Key: " + KEY.Key);
-            Console.Write("Values: ");
-            foreach (var LINES in KEY.Value)
-            {
-                Console.Write(LINES + ", ");
-            }
-            Console.WriteLine();
-        }
-
-        
-        Console.WriteLine("Written " + _pcLine + " lines");
-        Console.WriteLine("Should be " + _program.Count + " lines");
+        // foreach (var KEY in _labelPointers)
+        // {
+        //     Console.WriteLine("Key: " + KEY.Key + " Value: " + KEY.Value);
+        // }
+        //
+        // foreach (var KEY in _labelUsages)
+        // {
+        //     Console.WriteLine("Key: " + KEY.Key);
+        //     Console.Write("Values: ");
+        //     foreach (var LINES in KEY.Value)
+        //     {
+        //         Console.Write(LINES + ", ");
+        //     }
+        //     Console.WriteLine();
+        // }
+        //
+        // Console.WriteLine("Written " + _pcLine + " lines");
+        // Console.WriteLine("Should be " + _program.Count + " lines");
         
         return 0;
     }
