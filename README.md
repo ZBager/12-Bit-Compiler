@@ -1,6 +1,6 @@
 # 12-Bit Compiler
 
-An assembler written in C# (.NET) that compiles a custom assembly language into 12-bit hexadecimal machine code for a 12-bit architecture.
+An assembler written in C# (.NET) that compiles a custom assembly language into 12-bit hexadecimal machine code for a 12-bit architecture used in 12-Bit-CPU-Emulator
 
 ## Overview
 
@@ -22,17 +22,17 @@ The assembler supports three operand types:
 
 | Mnemonic | Operands | Description |
 |----------|----------|-------------|
-| `ADD` | `dest, src` | Add |
-| `SUB` | `dest, src` | Subtract |
-| `RSUB` | `dest, src` | Reverse subtract |
+| `ADD` | `src, dest` | Add |
+| `SUB` | `src, dest` | Subtract |
+| `RSUB` | `src, dest` | Reverse subtract |
 
 ### Logic
 
 | Mnemonic | Operands | Description |
 |----------|----------|-------------|
-| `AND` | `dest, src` | Bitwise AND |
-| `OR` | `dest, src` | Bitwise OR |
-| `XOR` | `dest, src` | Bitwise XOR |
+| `AND` | `src, dest` | Bitwise AND |
+| `OR` | `src, dest` | Bitwise OR |
+| `XOR` | `src, dest` | Bitwise XOR |
 
 ### Data Movement
 
